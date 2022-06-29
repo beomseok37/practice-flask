@@ -210,3 +210,29 @@ def upload_file():
 
 `request`객체의 속성인 `files`를 사용한다. `files`는 file명을 key로 해당 파일을 value로 하는 dictionary이다.<br>
 `files`속성으로 얻어온 file에 대한 참조는 표준 파이썬 file객체처럼 행동한다. 그래서 `save()`메소드를 가지고 있어 서버의 파일시스템에 저장할 수 있다.
+
+### 쿠키
+
+쿠키에 접근하기 위해서는 `request` 객체의 `cookies`속성을 사용한다.<br>
+쿠키를 저장하기 위해서는 `response` 객체의 `set_cookie`메소드를 사용한다.<br>
+Reading cookies
+
+```py
+from flask import request
+
+@app.route('/')
+def index():
+    username = request.cookies.get('username')
+```
+
+Storing cookies
+
+```py
+from flask import make_response
+
+@app.route('/')
+def index():
+    resp = make_response(render_template(...))
+    resp.set_cookie('username', 'the username')
+    return resp
+```
