@@ -127,3 +127,29 @@ def login():
     else:
         show_the_login_form()
 ```
+
+## 템플릿 렌더링
+
+```py
+from flask import render_template
+
+@app.route('/hello/')
+@app.route('/hello/<name>')
+def hello(name=None):
+    return render_template('hello.html', name=name)
+```
+
+`render_template()`메소드를 사용하여 템플릿을 렌더링해줄 수 있고, 인자를 넘겨줄 수도 있다.<br>
+Flasksms templates폴더에서 템플릿을 찾으므로 해당 폴더 내에 템플릿들을 넣어주어야 한다.
+
+### 템플릿예제
+
+```html
+<!DOCTYPE html>
+<title>Hello from Flask</title>
+{% if name %}
+<h1>Hello {{ name }}!</h1>
+{% else %}
+<h1>Hello World!</h1>
+{% endif %}
+```
