@@ -153,3 +153,60 @@ Flasksms templates폴더에서 템플릿을 찾으므로 해당 폴더 내에 �
 <h1>Hello World!</h1>
 {% endif %}
 ```
+
+템플릿에서 상속이 유용하게 쓰인다. 자동 이스케이핑은 켜져있고, name이란 변수가 인자로 전해졌다면 자동으로 이스케이핑 된다.
+
+## 요청 데이터 접근
+
+클라이언트가 서버로 보내는 데이터는 `request`객체에 의해 제공된다.
+
+### 컨텍스트 로컬
+
+웹에서 요청이 들어오면, 웹 서버는 새로운 쓰레드를 생성한다. Flask는 내부적으로 요청을 처리할 때, 현재 처리되는 쓰레드를 활성화된 문맥이라고 간주하고 실행되는 어플리케이션과 WSGI환경을 그 문맥에 연결한다.<br>
+유닛테스트를 할 경우 요청 걕체에 의한 코드는 깨지게 되는데 그 이유는 요청이 들어오지 않아 활성화된 문맥이 없으므로 요청 객체가 존재하지 않기 때문이다. 그래서 문맥관리자 `test_request_context()`를 사용한다.<br>
+Flaskdptj 이런 객체들은 보통 객체가 아닌 전역 객체들이다. 이 객체들은 실제로 **어떤 특정한 문맥**에서 생성되는 객체들에 대한 대리자들이다.
+
+### 요청 객체 (기본)
+
+```py
+from flask import request
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if valid_login(request.form['username'],
+                       request.form['password']):
+            return log_the_user_in(request.form['username'])
+        else:
+            error = 'Invalid username/password'
+    # 아래의 코드는 요청이 GET 이거나, 인증정보가 잘못됐을때 실행된다.
+    return render_template('login.html', error=error)
+```
+
+- method속성을 이용하여 http 메소드를 확인할 수 있다.
+- form속성을 이용하여 전달된 데이터에 접근할 수 있다.
+- GET 메소드와 같이 URL로 넘겨진 파라미터에 접근하려면 `args`속성을 사용한다.
+  > ```
+  > key = request.args.get('key','')
+  > ```
+  >
+  > `args`속성을 사용할 경우 get을 사용하거나 KeyError예외를 처리하여 URL접근할 것을 추천한다. 왜냐하면 사용자가 임의로 URL을 변경할 수도 있기 때문이다.
+
+### 파일 업로드
+
+HTML form에 `enctype="multipart/form-data"`를 설정<br>
+
+```py
+from flask import request
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['the_file']
+        f.save('/var/www/uploads/uploaded_file.txt')
+    ...
+```
+
+`request`객체의 속성인 `files`를 사용한다. `files`는 file명을 key로 해당 파일을 value로 하는 dictionary이다.<br>
+`files`속성으로 얻어온 file에 대한 참조는 표준 파이썬 file객체처럼 행동한다. 그래서 `save()`메소드를 가지고 있어 서버의 파일시스템에 저장할 수 있다.
