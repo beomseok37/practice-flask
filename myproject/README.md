@@ -58,3 +58,59 @@ app.run(debug=True)
 
 `run()`메소드는 로컬 개발 서버를 실행시키기에는 좋지만 코드 변경후에 수동으로 재시작해야한다.<br>
 플라스크는 그런 번거러운 것을 개선한 방식을 제공한다. 디버그모드를 지원할 경우, 서버는 코드 변경을 감지하고 자동으로 리로드하고, 문제가 발생하면 문제를 찾을 수 있도록 디버거를 제공한다.
+
+## 라우팅
+
+기본 예시
+
+```py
+@app.route(‘/’)
+def index():
+  return ‘Index Page’
+
+@app.route(‘/hello’)
+def hello():
+  return ‘Hello World’
+```
+
+`route()` 데코레이터는 함수와 URL을 연결해준다.
+
+### 변수 규칙
+
+<variable_name>으로 URL에 특별한 영역으로 표시해야한다. 그 부분은 함수의 키워드 인수로써 넘어간다.<br>
+<converter:variable_name>으로 규칙을 표시하여 변환기를 추가할 수 있다.
+
+```py
+@app.route('/user/<username>')
+def show_user_profile(username):
+    # show the user profile for that user
+    return 'User %s' % username
+
+@app.route('/post/<int:post_id>')
+def show_post(post_id):
+    # show the post with the given id, the id is an integer
+    return 'Post %d' % post_id
+```
+
+다음과 같은 변환기를 제공한다.
+|||
+|-|-|
+|int|accepts integers|
+|float|like int but for floating point values|
+|path|like the default but also accepts slashes|
+|||
+
+### 유일한 URL과 리디렉션 동작
+
+```py
+@app.route('/projects/')
+def projects():
+    return 'The project page'
+
+@app.route('/about')
+def about():
+    return 'The about page'
+```
+
+URL정의에 있어서 뒷 슬래쉬가 있을 경우, 파일시스템의 폴더와 유사하게 뒷 슬래쉬 없이 URL접근하면, Flask가 뒷 슬래쉬를 가진 정규 URL로 고쳐준다.<br>
+URL정의에 있어서 뒷 슬래쉬가 없을 경우, 뒷 슬래쉬를 포함해서 URL에 접근하면 "404 Page not Found" 에러를 유발한다.<br>
