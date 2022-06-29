@@ -280,3 +280,31 @@ def not_found(error):
 
 `make_response()`함수를 사용하여 뷰 안에서 결과 resopnse객체를 찾을 수 있다.<br>
 `make_response()`함수를 사용하여 반환되는 표현을 래핑하고, 변경을 위해 결과 객체를 얻은 다음 반환하면 된다.
+
+## 세션
+
+`request` 객체 외에도 `session`객체로 하나의 요청에서 다음 요청까지 사용자에 대한 구체적인 정보를 저장할 수 있다.<br>
+세션은 쿠키위에서 구현되어 지고 암호키를 생성하여 그 쿠키를 서명한다.<br>
+세션에 저장은 `session`객체 dirctionary처럼 저장하면 된다.
+
+```py
+from flask import session,redirect,request
+
+@app.route('login', methods=['GET','POST'])
+def login():
+  if request.method == 'POST':
+    session['username'] = request.form['username']
+    return redirect(url_for'index'))
+  ...
+```
+
+세션에 저장된 값을 없앨 경우 `pop`을 사용
+
+```py
+@app.route('/logout')
+def logout():
+  session.pop('username', None)
+  return redirect(url_for('index'))
+```
+
+본 내용은 [flask docs](https://flask-docs-kr.readthedocs.io/ko/latest/quickstart.html)의 내용을 참고하여 작성하였습니다.
