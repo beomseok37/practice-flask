@@ -236,3 +236,47 @@ def index():
     resp.set_cookie('username', 'the username')
     return resp
 ```
+
+## 리다이렉션과 에러
+
+redirect시 `redirect()`함수를 사용.<br>
+에로코드로 일찍 중단하고 싶다면 `abort()`함수 사용<br>
+
+```py
+from flask import request, render_template, make_resopnse
+
+@app.route('/signup')
+def sign_up():
+  user_id = request.form['user_id']
+  password = request.form['password']
+  store_user_info(user_id,password):
+  return redirect(url_for('login'))
+```
+
+에러 페이지를 변경하려면 `errorhandler()`데코레이터를 사용한다.
+
+```py
+from flask import render_template
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
+```
+
+## 응답
+
+- 만약 정확한 유형의 response객체가 반환된다면 그 객체는 그대로 뷰로부터 반환되어 진다.
+- 만약 문자열이 반환된다면, response객체는 해당 데이타와 기본 파라미터들을 갖는 reponse객체가 생성된다.
+- 만약 튜플이 반환된다면 튜플 안에 있는 아이템들이 추가적인 정보를 제공할 수 있다. 그런 퓨틀들은 지정된 폼 (response, status, headers) 이여야 하며, 그 중 적어도 하나의 아이템이 튜플 안에 있어야 한다. status 값은 status code를 오버라이드하면 headers는 추가적인 정보의 list, dictionary가 될 수 있다.
+- 만약 위의 것들이 아무것도 적용되지 않는다면, Flask는 반환값이 유효한 WSGI application 이라고 가정하고 WSGI application을 response객체로 변환할 것이다.
+
+아래와 같은 뷰가 있다.
+
+```py
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('error.html'), 404
+```
+
+`make_response()`함수를 사용하여 뷰 안에서 결과 resopnse객체를 찾을 수 있다.<br>
+`make_response()`함수를 사용하여 반환되는 표현을 래핑하고, 변경을 위해 결과 객체를 얻은 다음 반환하면 된다.
