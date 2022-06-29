@@ -18,6 +18,8 @@ if __name__ == '__main__':
 
 파일의 이름을 flask.py로 지을 경우 Flask자체와 충돌이 날 수 있다.
 
+---
+
 ### 실행 방법
 
 ```sh
@@ -47,6 +49,8 @@ if __name__ == '__main__':
 
 서버 중지 시 control-C
 
+---
+
 ## 디버그 모드
 
 ```py
@@ -58,6 +62,8 @@ app.run(debug=True)
 
 `run()`메소드는 로컬 개발 서버를 실행시키기에는 좋지만 코드 변경후에 수동으로 재시작해야한다.<br>
 플라스크는 그런 번거러운 것을 개선한 방식을 제공한다. 디버그모드를 지원할 경우, 서버는 코드 변경을 감지하고 자동으로 리로드하고, 문제가 발생하면 문제를 찾을 수 있도록 디버거를 제공한다.
+
+---
 
 ## 라우팅
 
@@ -74,6 +80,8 @@ def hello():
 ```
 
 `route()` 데코레이터는 함수와 URL을 연결해준다.
+
+---
 
 ### 변수 규칙
 
@@ -100,6 +108,8 @@ def show_post(post_id):
 |path|like the default but also accepts slashes|
 |||
 
+---
+
 ### 유일한 URL과 리디렉션 동작
 
 ```py
@@ -115,6 +125,8 @@ def about():
 URL정의에 있어서 뒷 슬래쉬가 있을 경우, 파일시스템의 폴더와 유사하게 뒷 슬래쉬 없이 URL접근하면, Flask가 뒷 슬래쉬를 가진 정규 URL로 고쳐준다.<br>
 URL정의에 있어서 뒷 슬래쉬가 없을 경우, 뒷 슬래쉬를 포함해서 URL에 접근하면 "404 Page not Found" 에러를 유발한다.<br>
 
+---
+
 ## HTTP 메소드
 
 기본적으로 GET방식으로 제공되지만, `route()`데코레이터에 methods 인자를 제공하면 다른 방식으로 변경할 수 있다.
@@ -127,6 +139,8 @@ def login():
     else:
         show_the_login_form()
 ```
+
+---
 
 ## 템플릿 렌더링
 
@@ -156,6 +170,8 @@ Flasksms templates폴더에서 템플릿을 찾으므로 해당 폴더 내에 �
 
 템플릿에서 상속이 유용하게 쓰인다. 자동 이스케이핑은 켜져있고, name이란 변수가 인자로 전해졌다면 자동으로 이스케이핑 된다.
 
+---
+
 ## 요청 데이터 접근
 
 클라이언트가 서버로 보내는 데이터는 `request`객체에 의해 제공된다.
@@ -166,7 +182,9 @@ Flasksms templates폴더에서 템플릿을 찾으므로 해당 폴더 내에 �
 유닛테스트를 할 경우 요청 걕체에 의한 코드는 깨지게 되는데 그 이유는 요청이 들어오지 않아 활성화된 문맥이 없으므로 요청 객체가 존재하지 않기 때문이다. 그래서 문맥관리자 `test_request_context()`를 사용한다.<br>
 Flaskdptj 이런 객체들은 보통 객체가 아닌 전역 객체들이다. 이 객체들은 실제로 **어떤 특정한 문맥**에서 생성되는 객체들에 대한 대리자들이다.
 
-### 요청 객체 (기본)
+---
+
+## 요청 객체 (기본)
 
 ```py
 from flask import request
@@ -193,7 +211,9 @@ def login():
   >
   > `args`속성을 사용할 경우 get을 사용하거나 KeyError예외를 처리하여 URL접근할 것을 추천한다. 왜냐하면 사용자가 임의로 URL을 변경할 수도 있기 때문이다.
 
-### 파일 업로드
+---
+
+## 파일 업로드
 
 HTML form에 `enctype="multipart/form-data"`를 설정<br>
 
@@ -211,7 +231,9 @@ def upload_file():
 `request`객체의 속성인 `files`를 사용한다. `files`는 file명을 key로 해당 파일을 value로 하는 dictionary이다.<br>
 `files`속성으로 얻어온 file에 대한 참조는 표준 파이썬 file객체처럼 행동한다. 그래서 `save()`메소드를 가지고 있어 서버의 파일시스템에 저장할 수 있다.
 
-### 쿠키
+---
+
+## 쿠키
 
 쿠키에 접근하기 위해서는 `request` 객체의 `cookies`속성을 사용한다.<br>
 쿠키를 저장하기 위해서는 `response` 객체의 `set_cookie`메소드를 사용한다.<br>
@@ -236,6 +258,8 @@ def index():
     resp.set_cookie('username', 'the username')
     return resp
 ```
+
+---
 
 ## 리다이렉션과 에러
 
@@ -263,6 +287,8 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 ```
 
+---
+
 ## 응답
 
 - 만약 정확한 유형의 response객체가 반환된다면 그 객체는 그대로 뷰로부터 반환되어 진다.
@@ -280,6 +306,8 @@ def not_found(error):
 
 `make_response()`함수를 사용하여 뷰 안에서 결과 resopnse객체를 찾을 수 있다.<br>
 `make_response()`함수를 사용하여 반환되는 표현을 래핑하고, 변경을 위해 결과 객체를 얻은 다음 반환하면 된다.
+
+---
 
 ## 세션
 
