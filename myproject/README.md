@@ -114,3 +114,16 @@ def about():
 
 URL정의에 있어서 뒷 슬래쉬가 있을 경우, 파일시스템의 폴더와 유사하게 뒷 슬래쉬 없이 URL접근하면, Flask가 뒷 슬래쉬를 가진 정규 URL로 고쳐준다.<br>
 URL정의에 있어서 뒷 슬래쉬가 없을 경우, 뒷 슬래쉬를 포함해서 URL에 접근하면 "404 Page not Found" 에러를 유발한다.<br>
+
+## HTTP 메소드
+
+기본적으로 GET방식으로 제공되지만, `route()`데코레이터에 methods 인자를 제공하면 다른 방식으로 변경할 수 있다.
+
+```ps
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        do_the_login()
+    else:
+        show_the_login_form()
+```
